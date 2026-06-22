@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
+import GetStartedModal from '@/components/GetStartedModal';
 
 export const metadata: Metadata = { title: 'About | Meet the Creator' };
 
@@ -9,30 +10,26 @@ export default function AboutPage() {
     <div className="min-h-screen flex flex-col bg-white">
 
       {/* Nav */}
-      <header className="border-b border-gray-200 bg-white sticky top-0 z-20">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="font-bold text-lg tracking-tight text-gray-900">
-            The Last Shall Be First
+      <header className="border-b border-gray-200 bg-white sticky top-0 z-40">
+        <div className="max-w-5xl mx-auto px-4 h-24 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 font-bold text-2xl tracking-tight text-gray-900">
+            <Image src="/LogoV1.png" alt="Servus logo" width={88} height={88} className="object-contain" priority />
+            Servus
           </Link>
-          <nav className="flex items-center gap-6">
-            <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-              Home
-            </Link>
-            <Link href="/about" className="text-sm text-gray-900 font-medium border-b-2 border-brand-600">
+          <nav className="flex items-center gap-4">
+            <Link href="/about" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
               About
             </Link>
-            <Link href="/case-studies" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-              Case Studies
-            </Link>
-            <Link href="/blog" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
-              Blog
-            </Link>
-            <Link
-              href="/login"
-              className="text-sm bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            <a
+              href="tel:9089021994"
+              className="hidden sm:flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors font-medium"
             >
-              Sign in
-            </Link>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.06 6.06l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              908-902-1994
+            </a>
+            <GetStartedModal triggerClassName="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-brand-700 transition-colors" />
           </nav>
         </div>
       </header>
