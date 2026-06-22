@@ -51,6 +51,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      leads: {
+        Row: {
+          id: string;
+          business_name: string;
+          services: string[];
+          name: string;
+          phone: string | null;
+          email: string;
+          pain_point: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_name: string;
+          services: string[];
+          name: string;
+          phone?: string | null;
+          email: string;
+          pain_point?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_name?: string;
+          services?: string[];
+          name?: string;
+          phone?: string | null;
+          email?: string;
+          pain_point?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       notes: {
         Row: {
           id: string;
@@ -97,3 +130,4 @@ export type Database = {
 export type Conversation = Database['public']['Tables']['conversations']['Row'];
 export type Message = Database['public']['Tables']['messages']['Row'];
 export type Note = Database['public']['Tables']['notes']['Row'];
+export type Lead = Database['public']['Tables']['leads']['Row'];

@@ -3,10 +3,28 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'The Last Shall Be First',
-    template: '%s | The Last Shall Be First',
+    default: 'Servus - Technology for Your Customers',
+    template: '%s | Servus',
   },
-  description: 'The Last Shall Be First',
+  description: 'Servus — a tailored online experience at an affordable price.',
+  openGraph: {
+    title: 'Servus - Technology for Your Customers',
+    description: 'Servus — a tailored online experience at an affordable price.',
+    images: [
+      {
+        url: '/DanielFedakHeadshot.jpeg',
+        width: 1200,
+        height: 630,
+        alt: 'Servus - Technology for Your Customers',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Servus - Technology for Your Customers',
+    description: 'Servus — a tailored online experience at an affordable price.',
+    images: ['/DanielFedakHeadshot.jpeg'],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

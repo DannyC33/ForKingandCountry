@@ -21,7 +21,7 @@ export function LoginForm() {
       <div className="text-center space-y-2">
         <div className="text-4xl">📬</div>
         <p className="font-medium text-gray-900">Check your email</p>
-        <p className="text-sm text-gray-500">We sent you a magic link. Click it to sign in.</p>
+        <p className="text-sm text-gray-500">We sent you a miracle link. Click it to sign in.</p>
         <button
           onClick={() => window.location.reload()}
           className="mt-4 text-sm text-brand-600 hover:underline"
@@ -63,7 +63,7 @@ export function LoginForm() {
               mode === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            {m === 'login' ? 'Sign In' : m === 'signup' ? 'Sign Up' : 'Magic Link'}
+            {m === 'login' ? 'Sign In' : m === 'signup' ? 'Sign Up' : 'Miracle Link'}
           </button>
         ))}
       </div>
@@ -90,7 +90,7 @@ export function LoginForm() {
             disabled={isPending}
             className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50"
           >
-            {isPending ? 'Sending…' : 'Send Magic Link'}
+            {isPending ? 'Sending…' : 'Send Miracle Link'}
           </button>
         </form>
       ) : (

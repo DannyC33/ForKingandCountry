@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'uploads-ssl.webflow.com' },
       { protocol: 'https', hostname: 'assets.website-files.com' },
       { protocol: 'https', hostname: '*.supabase.co' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },
 };
