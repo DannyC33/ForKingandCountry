@@ -1,3 +1,4 @@
+import React, { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getBlogPosts } from '@/lib/webflow/client';
@@ -59,7 +60,7 @@ export default async function HomePage() {
             <Image src="/LogoV1.png" alt="Servus logo" width={88} height={88} className="object-contain" priority />
             Servus
           </Link>
-          <nav className="flex items-center gap-4">
+          <nav aria-label="Main navigation" className="flex items-center gap-4">
             <Link href="/about" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
               About
             </Link>
@@ -67,7 +68,7 @@ export default async function HomePage() {
               href="tel:9089021994"
               className="hidden sm:flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors font-medium"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.06 6.06l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
               908-902-1994
@@ -77,7 +78,7 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Hero */}
         <section className="bg-brand-50 pt-[97px] pb-16 px-6">
           <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12">
@@ -102,7 +103,8 @@ export default async function HomePage() {
                 viewBox="0 0 636 350"
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-full drop-shadow-lg"
-                aria-label="Old 2000s order form vs modern pizza topping selector"
+                role="img"
+              aria-label="Old 2000s order form vs modern pizza topping selector"
               >
                 {/* ── LEFT PANEL: 2000s Form (shifted right) ── */}
                 <g transform="translate(370,0)">
@@ -277,9 +279,9 @@ export default async function HomePage() {
             <h2 className="text-4xl font-bold text-gray-900 mb-12">What we do</h2>
             <div className="space-y-8">
               {[
-                { number: '01', text: 'We create exceptional online and offline experiences for your clients.' },
-                { number: '02', text: 'Configure communication tools and marketing platforms.' },
-                { number: '03', text: 'Track the success of your website and campaigns.' },
+                { number: '01', text: 'We make any online interaction with your business smooth and completely self service.' },
+                { number: '02', text: 'Digitally market to drive customers to your website.' },
+                { number: '03', text: 'Measure if our websites and marketing are hitting the mark.' },
               ].map(({ number, text }) => (
                 <div key={number} className="flex items-start gap-6 border-b border-gray-200 pb-8 last:border-0 last:pb-0">
                   <span className="text-4xl font-bold text-brand-200 leading-none shrink-0 select-none">{number}</span>
@@ -291,23 +293,63 @@ export default async function HomePage() {
         </section>
 
         {/* Pizza Vision Section */}
-        <section className="w-full relative py-20 px-6 overflow-hidden">
-          <div className="absolute inset-0 z-0">
-            <Image
-              src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=1600&q=80"
-              alt="Chef placing pizza in brick oven"
-              fill
-              className="object-cover scale-105 blur-sm"
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-white/78" />
-          </div>
-          <div className="relative z-10">
-            <div className="max-w-4xl mx-auto text-center mb-12 bg-gray-100/90 backdrop-blur-sm rounded-2xl px-8 py-10 shadow-sm">
-              <h1 className="text-4xl sm:text-5xl font-bold mb-8 leading-tight text-gray-900">
-                Vision for an Exceptional Pizza Experience
-              </h1>
-              <p className="text-gray-700 italic text-xl leading-relaxed">
+        <section className="py-20 px-6 bg-[#1e3a5f]">
+          <div className="max-w-6xl mx-auto">
+
+            <span className="inline-block text-xs font-semibold tracking-widest text-blue-300 uppercase mb-4">
+              The Experience
+            </span>
+            <h2 className="text-4xl font-bold text-white mb-10">
+              Vision for an Exceptional Pizza Experience
+            </h2>
+
+            {/* Top 3 steps */}
+            <div className="flex flex-col sm:flex-row items-stretch">
+              {([
+                { icon: <><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>, label: 'Client enters your online store' },
+                { icon: <><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></>, label: 'One click away option to start their order' },
+                { icon: <><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></>, label: 'Personalized follow-up questions before checkout' },
+              ] as { icon: React.ReactNode; label: string }[]).map((card, i) => (
+                <Fragment key={i}>
+                  {i > 0 && (
+                    <>
+                      <div className="hidden sm:flex items-center justify-center shrink-0 px-1" aria-hidden="true">
+                        <svg className="w-5 h-5 text-blue-300/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                      </div>
+                      <div className="flex sm:hidden justify-center py-2" aria-hidden="true">
+                        <svg className="w-5 h-5 text-blue-300/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>
+                        </svg>
+                      </div>
+                    </>
+                  )}
+                  <div className="flex-1 bg-white/10 border border-white/20 rounded-2xl p-6 flex flex-col items-center text-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-blue-400/40 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                      {i + 1}
+                    </span>
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        {card.icon}
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold text-white leading-snug">{card.label}</p>
+                  </div>
+                </Fragment>
+              ))}
+            </div>
+
+            {/* Connector ↓ to vision text */}
+            <div className="flex justify-center my-4" aria-hidden="true">
+              <svg className="w-6 h-6 text-blue-300/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>
+              </svg>
+            </div>
+
+            {/* Central vision text */}
+            <div className="bg-white/10 border border-white/20 rounded-2xl px-8 py-10">
+              <p className="text-white/90 italic text-lg leading-relaxed">
                 The client virtually enters your online store — it&apos;s perfectly clean, uncluttered and easy
                 to navigate. If you are a pizza shop, that means product pictures enter the field of vision
                 immediately. The products themselves are clickable which begins the order process. The product
@@ -321,42 +363,55 @@ export default async function HomePage() {
                 image of a signature pie to remind them why they chose you in the first place and a coupon code
                 to sweeten the deal.
               </p>
-              <p className="mt-6 italic text-gray-600 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
+              <p className="mt-6 italic text-white/50 text-lg" style={{ fontFamily: 'Georgia, serif' }}>
                 Bon Appétit.
               </p>
             </div>
-            <div className="max-w-7xl mx-auto">
-              <div className="flex flex-col lg:flex-row items-stretch gap-3 lg:gap-0">
-                {[
-                  { icon: <><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></>, label: 'Client enters your online store' },
-                  { icon: <><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></>, label: 'They are provided a one click away option to start their order' },
-                  { icon: <><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></>, label: 'They are asked personalized follow-up questions before their order is completed' },
-                  { icon: <><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></>, label: 'They are provided modern payment apps as alternatives to credit card processing' },
-                  { icon: <><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></>, label: 'A series of follow-up messages occur for customer satisfaction' },
-                  { icon: <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>, label: 'Encourage retention by reminding them why they came in the first place' },
-                ].map((card, i, arr) => (
-                  <div key={i} className="contents">
-                    <div className="flex flex-col items-center flex-1">
-                      <div className="w-full bg-white/85 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 flex flex-col items-center text-center gap-4 h-full shadow-sm">
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: '#1e3a5f' }}>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            {card.icon}
-                          </svg>
-                        </div>
-                        <p className="text-sm font-semibold text-gray-900 leading-snug">{card.label}</p>
-                      </div>
-                    </div>
-                    {i < arr.length - 1 && (
-                      <div className="hidden lg:flex items-center justify-center px-2 text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+
+            {/* Connector ↓ to bottom steps */}
+            <div className="flex justify-center my-4" aria-hidden="true">
+              <svg className="w-6 h-6 text-blue-300/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>
+              </svg>
+            </div>
+
+            {/* Bottom 3 steps */}
+            <div className="flex flex-col sm:flex-row items-stretch">
+              {([
+                { icon: <><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></>, label: 'Modern payment alternatives to credit card processing' },
+                { icon: <><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></>, label: 'Follow-up messages for customer satisfaction' },
+                { icon: <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>, label: 'Retention reminders that bring customers back' },
+              ] as { icon: React.ReactNode; label: string }[]).map((card, i) => (
+                <Fragment key={i}>
+                  {i > 0 && (
+                    <>
+                      <div className="hidden sm:flex items-center justify-center shrink-0 px-1" aria-hidden="true">
+                        <svg className="w-5 h-5 text-blue-300/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                         </svg>
                       </div>
-                    )}
+                      <div className="flex sm:hidden justify-center py-2" aria-hidden="true">
+                        <svg className="w-5 h-5 text-blue-300/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>
+                        </svg>
+                      </div>
+                    </>
+                  )}
+                  <div className="flex-1 bg-white/10 border border-white/20 rounded-2xl p-6 flex flex-col items-center text-center gap-3">
+                    <span className="w-7 h-7 rounded-full bg-blue-400/40 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                      {i + 4}
+                    </span>
+                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        {card.icon}
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold text-white leading-snug">{card.label}</p>
                   </div>
-                ))}
-              </div>
+                </Fragment>
+              ))}
             </div>
+
           </div>
         </section>
 
@@ -364,7 +419,7 @@ export default async function HomePage() {
         <section className="py-20 px-6 bg-white">
           <div className="max-w-6xl mx-auto">
 
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Standard Packages</h1>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Standard Packages</h2>
             <p className="text-gray-500 text-lg leading-relaxed max-w-3xl mb-14">
               Our three core packages are Web Experience development, Marketing, and Analytics. These can be
               powerful compliments to drive new customers to your new experience and then testing to make

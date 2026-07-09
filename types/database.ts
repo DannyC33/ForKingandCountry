@@ -60,6 +60,8 @@ export type Database = {
           phone: string | null;
           email: string;
           pain_point: string | null;
+          email_opt_in: boolean;
+          sms_opt_in: boolean;
           created_at: string;
         };
         Insert: {
@@ -70,6 +72,8 @@ export type Database = {
           phone?: string | null;
           email: string;
           pain_point?: string | null;
+          email_opt_in?: boolean;
+          sms_opt_in?: boolean;
           created_at?: string;
         };
         Update: {
@@ -80,6 +84,8 @@ export type Database = {
           phone?: string | null;
           email?: string;
           pain_point?: string | null;
+          email_opt_in?: boolean;
+          sms_opt_in?: boolean;
           created_at?: string;
         };
         Relationships: [];

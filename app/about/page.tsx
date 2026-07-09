@@ -16,7 +16,7 @@ export default function AboutPage() {
             <Image src="/LogoV1.png" alt="Servus logo" width={88} height={88} className="object-contain" priority />
             Servus
           </Link>
-          <nav className="flex items-center gap-4">
+          <nav aria-label="Main navigation" className="flex items-center gap-4">
             <Link href="/about" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
               About
             </Link>
@@ -24,7 +24,7 @@ export default function AboutPage() {
               href="tel:9089021994"
               className="hidden sm:flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors font-medium"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.06 6.06l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
               </svg>
               908-902-1994
@@ -131,7 +131,7 @@ export default function AboutPage() {
             <div className="space-y-8 pt-2">
 
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-5">Top Skills</h1>
+                <h2 className="text-2xl font-bold text-gray-900 mb-5">Top Skills</h2>
                 <div className="flex flex-wrap justify-center gap-3">
                   {['Hard Work', 'Listening', 'Getting Into The Weeds', 'Maintaining A 1000 Foot View', 'Communication', 'Going From 0 To 1'].map((skill) => (
                     <div key={skill} className="px-5 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium text-base">
@@ -142,7 +142,7 @@ export default function AboutPage() {
               </div>
 
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-5">Top Technical Skills</h1>
+                <h2 className="text-2xl font-bold text-gray-900 mb-5">Top Technical Skills</h2>
                 <div className="flex flex-wrap justify-center gap-3">
                   {['Learning Any Martech Platform', 'Preparing Data For Activation', 'Claude AI'].map((skill) => (
                     <div key={skill} className="px-5 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium text-base">
@@ -153,7 +153,7 @@ export default function AboutPage() {
               </div>
 
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-5">Top Platforms</h1>
+                <h2 className="text-2xl font-bold text-gray-900 mb-5">Top Platforms</h2>
                 <div className="flex flex-wrap justify-center gap-4">
                   {[
                     { name: 'Claude AI',     slug: 'claude',        src: '/ClaudeAI.png',                  href: 'https://claude.ai',                            imgClass: 'h-[90px]', imgStyle: { transform: 'translate(-2px, -15px)' } },

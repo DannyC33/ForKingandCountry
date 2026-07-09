@@ -12,23 +12,130 @@ const BLACKLISTED_DOMAINS = new Set([
   'guerrillamail.de', 'guerrillamail.net', 'guerrillamail.org',
 ]);
 
-// Normalize phone to digits-only with leading + (e.g. "+19089021994")
-function normalizePhone(phone: string): string {
+const ADMIN_EMAIL = 'daniel.c.fedak@gmail.com';
+
+function normalizePhone(phone: string): string | null {
   const digits = phone.replace(/\D/g, '');
+  if (digits.length < 10) return null;
   return `+${digits}`;
+}
+
+async function sendAdminAlert(subject: string, details: Record<string, unknown>) {
+  try {
+    await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': process.env.BREVO_API_KEY!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: { name: 'Servus Alerts', email: ADMIN_EMAIL },
+        to: [{ email: ADMIN_EMAIL, name: 'Daniel' }],
+        subject: `⚠️ Servus Alert: ${subject}`,
+        htmlContent: `
+          <h2 style="color:#c0392b;">Servus — ${subject}</h2>
+          <p>An error occurred that may need your attention.</p>
+          <table style="border-collapse:collapse;width:100%;font-family:monospace;font-size:14px;">
+            ${Object.entries(details).map(([k, v]) => `
+              <tr>
+                <td style="padding:8px 12px;border:1px solid #ddd;font-weight:bold;background:#f9f9f9;">${k}</td>
+                <td style="padding:8px 12px;border:1px solid #ddd;">${JSON.stringify(v)}</td>
+              </tr>
+            `).join('')}
+          </table>
+          <p style="margin-top:16px;color:#666;font-size:12px;">
+            Check your <a href="https://supabase.com/dashboard">Supabase dashboard</a> and
+            <a href="https://app.brevo.com">Brevo contacts</a> to resolve.
+          </p>
+        `,
+      }),
+    });
+  } catch (err) {
+    console.error('Failed to send admin alert:', err);
+  }
+}
+
+async function brevoUpsert(payload: Record<string, unknown>): Promise<{ ok: boolean; status: number; body: string }> {
+  const res = await fetch('https://api.brevo.com/v3/contacts', {
+    method: 'POST',
+    headers: {
+      'api-key': process.env.BREVO_API_KEY!,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+  return { ok: res.ok, status: res.status, body: await res.text() };
+}
+
+async function addToBrevo(
+  name: string,
+  email: string,
+  phone: string,
+  businessName: string,
+  services: string[],
+  painPoint: string,
+  emailOptIn: boolean,
+  smsOptIn: boolean,
+) {
+  const listId = parseInt(process.env.BREVO_LIST_ID ?? '3');
+  const [firstName, ...rest] = name.trim().split(' ');
+  const lastName = rest.join(' ') || '';
+
+  const baseAttributes = {
+    FIRSTNAME: firstName,
+    LASTNAME: lastName,
+    BUSINESS_NAME: businessName,
+    SERVICES: services.join(', '),
+    PAIN_POINT: painPoint || '',
+  };
+
+  const validPhone = phone && phone.replace(/\D/g, '').length >= 10;
+
+  // First attempt — include SMS
+  let result = await brevoUpsert({
+    email,
+    emailBlacklisted: !emailOptIn,
+    smsBlacklisted: !smsOptIn,
+    attributes: { ...baseAttributes, ...(validPhone ? { SMS: phone } : {}) },
+    listIds: [listId],
+    updateEnabled: true,
+  });
+
+  // If SMS caused a duplicate collision, retry without it
+  if (!result.ok && result.body.includes('duplicate_parameter') && result.body.includes('SMS')) {
+    console.warn('Brevo SMS duplicate — retrying without SMS for:', email);
+    result = await brevoUpsert({
+      email,
+      attributes: baseAttributes,
+      listIds: [listId],
+      updateEnabled: true,
+    });
+  }
+
+  if (!result.ok) {
+    console.error('Brevo error:', result.status, result.body);
+    await sendAdminAlert('Brevo contact sync failed', {
+      'HTTP Status': result.status,
+      'Brevo Error': result.body,
+      'Lead Name': name,
+      'Lead Email': email,
+      'Business': businessName,
+      'Services': services.join(', '),
+      'Pain Point': painPoint,
+      'List ID': listId,
+    });
+  }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { businessName, services, name, phone, email, painPoint } = body;
+    const { businessName, services, name, phone, email, painPoint, emailOptIn = false, smsOptIn = false } = body;
 
-    // Required field check
     if (!businessName || !name || !email || !services?.length) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Server-side email validation
     if (!EMAIL_RE.test(email)) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
     }
@@ -42,7 +149,7 @@ export async function POST(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    // Silent duplicate check — return success so the UI shows thank-you
+    // Silent duplicate check
     const { data: existingByEmail } = await supabase
       .from('leads')
       .select('id')
@@ -53,8 +160,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
-    if (phone) {
-      const normalizedPhone = normalizePhone(phone);
+    const normalizedPhone = phone ? normalizePhone(phone) : null;
+
+    if (normalizedPhone !== null) {
       const { data: existingByPhone } = await supabase
         .from('leads')
         .select('id')
@@ -64,35 +172,36 @@ export async function POST(request: NextRequest) {
       if (existingByPhone) {
         return NextResponse.json({ success: true });
       }
-
-      const { error } = await supabase.from('leads').insert({
-        business_name: businessName,
-        services,
-        name,
-        phone: normalizedPhone,
-        email: email.toLowerCase(),
-        pain_point: painPoint || null,
-      });
-
-      if (error) {
-        console.error('Supabase insert error:', error);
-        return NextResponse.json({ error: 'Failed to save' }, { status: 500 });
-      }
-    } else {
-      const { error } = await supabase.from('leads').insert({
-        business_name: businessName,
-        services,
-        name,
-        phone: null,
-        email: email.toLowerCase(),
-        pain_point: painPoint || null,
-      });
-
-      if (error) {
-        console.error('Supabase insert error:', error);
-        return NextResponse.json({ error: 'Failed to save' }, { status: 500 });
-      }
     }
+
+    const { error: insertError } = await supabase.from('leads').insert({
+      business_name: businessName,
+      services,
+      name,
+      phone: normalizedPhone,
+      email: email.toLowerCase(),
+      pain_point: painPoint || null,
+      email_opt_in: emailOptIn,
+      sms_opt_in: smsOptIn,
+    });
+
+    if (insertError) {
+      console.error('Supabase insert error:', insertError);
+      await sendAdminAlert('Supabase insert failed — lead lost', {
+        'Error': insertError.message,
+        'Lead Name': name,
+        'Lead Email': email,
+        'Business': businessName,
+        'Services': services.join(', '),
+        'Pain Point': painPoint,
+      });
+      return NextResponse.json({ error: 'Failed to save' }, { status: 500 });
+    }
+
+    // Sync to Brevo in the background
+    addToBrevo(name, email.toLowerCase(), normalizedPhone ?? '', businessName, services, painPoint ?? '', emailOptIn, smsOptIn)
+      .catch(err => console.error('Brevo sync error:', err));
+
 
     return NextResponse.json({ success: true });
   } catch (err) {
