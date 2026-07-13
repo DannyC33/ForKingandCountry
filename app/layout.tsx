@@ -11,6 +11,13 @@ export const metadata: Metadata = {
     template: '%s | Servus',
   },
   description: 'Servus — a tailored online experience at an affordable price.',
+  icons: {
+    icon: [
+      { url: '/LogoV1.png', sizes: '192x192', type: 'image/png' },
+      { url: '/LogoV1.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: { url: '/LogoV1.png', sizes: '180x180', type: 'image/png' },
+  },
   openGraph: {
     title: 'Servus - Technology for Your Customers',
     description: 'Servus — a tailored online experience at an affordable price.',
@@ -48,7 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[500] focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-brand-600 focus:font-semibold focus:shadow-lg focus:outline-none"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[500] focus:bg-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-brand-500 focus:font-semibold focus:shadow-lg focus:outline-none"
         >
           Skip to main content
         </a>

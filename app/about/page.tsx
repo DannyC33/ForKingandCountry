@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import GetStartedModal from '@/components/GetStartedModal';
 
-export const metadata: Metadata = { title: 'About | Meet the Creator' };
+export const metadata: Metadata = { title: { absolute: 'About | Our Philosophy' } };
 
 export default function AboutPage() {
   return (
@@ -11,7 +11,7 @@ export default function AboutPage() {
 
       {/* Nav */}
       <header className="border-b border-gray-200 bg-white sticky top-0 z-40">
-        <div className="max-w-5xl mx-auto px-4 h-24 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 h-24 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 font-bold text-2xl tracking-tight text-gray-900">
             <Image src="/LogoV1.png" alt="Servus logo" width={88} height={88} className="object-contain" priority />
             Servus
@@ -34,19 +34,90 @@ export default function AboutPage() {
         </div>
       </header>
 
-      {/* Page body: two-column layout */}
-      <div className="max-w-6xl mx-auto w-full px-6 py-16 flex flex-col lg:flex-row gap-16 items-start flex-1">
+      {/* ── Who is Servus? — full width ── */}
+      <div className="max-w-6xl mx-auto w-full px-6 pt-16">
 
-        {/* Left — scrollable content */}
+        <span className="inline-block text-xs font-semibold tracking-widest text-brand-500 uppercase mb-4">
+          Our Philosophy
+        </span>
+
+        <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-10">
+          Who is Servus?
+        </h1>
+
+        <div className="space-y-8 text-gray-600 text-lg leading-relaxed">
+
+          <p className="border-l-4 border-brand-500 pl-4 italic">
+            At Servus the goal is to help you become the path of least resistance for your customers
+            by freshening up your online experience, creating impactful marketing and business
+            practices to meet your customers where they are, and drive them through your onboarding process.
+          </p>
+
+          <div>
+            <p className="mb-4">Some things small businesses could benefit from if they had the time to focus on it:</p>
+            <ul className="list-none space-y-4 ml-4">
+              <li className="flex gap-2">
+                <span className="shrink-0 text-gray-400">—</span>
+                <span>
+                  <span className="italic">A fresh website experience that provides better self-service options.</span>{' '}
+                  For a pizza shop that&apos;s an integrated ordering process, for a law office that might be
+                  an interactive form to pre-qualify leads.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="shrink-0 text-gray-400">—</span>
+                <span>
+                  <span className="italic">A process to capture reviews when your customers are at their best.</span>{' '}
+                  It&apos;s not fair that reviews are only left when customers have a complaint.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="shrink-0 text-gray-400">—</span>
+                <span>
+                  <span className="italic">A digital marketing campaign to increase local visibility of your business.</span>{' '}
+                  It could be a social media ad or adding/updating strategic business profiles for search engine optimization.
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <p>
+            Each of these initiatives have become easier with advancing technology and we aim to provide
+            corporate level ad agency work for prices a mom and pop shop can afford.
+          </p>
+
+          <p>
+            In the Bible it says the last shall be first and the first shall be last — we believe that
+            by putting your best into your customers is how your company will be first. If that strikes
+            a chord, please reach out to us.
+          </p>
+
+        </div>
+
+        <div className="mt-10">
+          <GetStartedModal triggerClassName="bg-brand-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-700 transition-colors" />
+        </div>
+
+      </div>
+
+      {/* Divider */}
+      <div className="max-w-6xl mx-auto w-full px-6">
+        <div className="my-16 border-t border-gray-200" />
+      </div>
+
+      {/* ── Meet the Creator — two-column with sticky photo ── */}
+      <div className="max-w-6xl mx-auto w-full px-6 pb-16 flex flex-col lg:flex-row gap-16 items-start flex-1">
+
+        {/* Left — Meet the Creator content */}
         <div className="flex-1 min-w-0">
 
-          <span className="inline-block text-xs font-semibold tracking-widest text-brand-600 uppercase mb-4">
-            Our Story
+          <span className="inline-block text-xs font-semibold tracking-widest text-brand-500 uppercase mb-4">
+            My Story
           </span>
 
-          <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-10">
+          <h2 className="text-5xl font-bold text-gray-900 leading-tight mb-10">
             Meet the Creator
-          </h1>
+          </h2>
 
           <div className="space-y-8 text-gray-600 text-lg leading-relaxed">
 
@@ -54,6 +125,7 @@ export default function AboutPage() {
               What I hope above all things that could be said about me is that I&apos;m a good friend and serve
               the needs of my family, community, and clients. What has been said is that I&apos;m a character,
               that I can dive deep into problems, and that I use too many visualizations in my PowerPoints.
+              <cite className="block mt-3 not-italic font-semibold text-gray-700 text-sm">— Daniel Fedak, Founder of Servus</cite>
             </blockquote>
 
             <p>
@@ -203,14 +275,13 @@ export default function AboutPage() {
             <p className="font-semibold text-gray-900 text-2xl" style={{ fontFamily: 'Georgia, serif' }}>
               Daniel Fedak
             </p>
-            <p className="text-sm text-gray-400 mt-1">Founder, The Last Shall Be First</p>
+            <p className="text-sm text-gray-400 mt-1">Founder, Servus</p>
           </div>
         </div>
 
-        {/* Right — sticky image */}
+        {/* Right — sticky image, now only beside Meet the Creator */}
         <div className="w-full lg:w-96 shrink-0 lg:sticky lg:top-24">
           <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 shadow-xl">
-            {/* Replace the src below with your real image path or URL */}
             <Image
               src="/DanielFedakHeadshot.jpeg"
               alt="Daniel Fedak"
@@ -220,10 +291,9 @@ export default function AboutPage() {
               sizes="(max-width: 1024px) 100vw, 384px"
               priority
             />
-            {/* Gradient overlay at the bottom */}
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-0 inset-x-0 p-6">
-              <p className="text-white font-semibold text-lg leading-tight">The Last Shall Be First</p>
+              <p className="text-white font-semibold text-lg leading-tight">Daniel Fedak | Servus</p>
               <p className="text-white/70 text-sm mt-1">Founder &amp; Creator</p>
             </div>
           </div>
@@ -238,7 +308,7 @@ export default function AboutPage() {
       </div>
 
       <footer className="border-t border-gray-200 py-8 px-6 text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} The Last Shall Be First. All rights reserved.
+        © {new Date().getFullYear()} Servus. All rights reserved.
       </footer>
     </div>
   );

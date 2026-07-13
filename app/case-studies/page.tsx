@@ -38,7 +38,7 @@ export default function CaseStudiesPage() {
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-6 py-16">
 
-        <span className="inline-block text-xs font-semibold tracking-widest text-brand-600 uppercase mb-4">
+        <span className="inline-block text-xs font-semibold tracking-widest text-brand-500 uppercase mb-4">
           Work
         </span>
         <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-16">
@@ -76,7 +76,7 @@ export default function CaseStudiesPage() {
                     href="https://byramhealthcare.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xl font-bold text-gray-900 hover:text-brand-600 transition-colors"
+                    className="text-xl font-bold text-gray-900 hover:text-brand-500 transition-colors"
                   >
                     Byram Healthcare
                   </a>

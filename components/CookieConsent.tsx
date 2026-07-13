@@ -56,7 +56,7 @@ export default function CookieConsent() {
           <div className="p-6 space-y-4">
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-full bg-brand-50 flex items-center justify-center shrink-0 mt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-brand-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
               </div>
@@ -66,7 +66,7 @@ export default function CookieConsent() {
                   Servus uses cookies to operate this website and, with your consent, to analyze
                   traffic and deliver targeted advertising. You can manage your preferences at any time.
                   See our{' '}
-                  <a href="/privacy" className="text-brand-600 underline hover:text-brand-700">Privacy Policy</a>.
+                  <a href="/privacy" className="text-brand-500 underline hover:text-brand-500">Privacy Policy</a>.
                 </p>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function CookieConsent() {
                   </p>
                 </div>
                 <div className="shrink-0 mt-0.5">
-                  <span className="text-xs font-semibold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full">Always on</span>
+                  <span className="text-xs font-semibold text-brand-500 bg-brand-50 px-2.5 py-1 rounded-full">Always on</span>
                 </div>
               </div>
 

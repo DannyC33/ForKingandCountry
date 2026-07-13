@@ -16,7 +16,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       {/* Avatar */}
       <div
         className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-          isUser ? 'bg-gray-900 text-white' : 'bg-brand-100 text-brand-600'
+          isUser ? 'bg-gray-900 text-white' : 'bg-brand-100 text-brand-500'
         }`}
       >
         {isUser ? 'You' : 'AI'}

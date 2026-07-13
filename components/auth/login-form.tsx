@@ -24,7 +24,7 @@ export function LoginForm() {
         <p className="text-sm text-gray-500">We sent you a miracle link. Click it to sign in.</p>
         <button
           onClick={() => window.location.reload()}
-          className="mt-4 text-sm text-brand-600 hover:underline"
+          className="mt-4 text-sm text-brand-500 hover:underline"
         >
           Try again
         </button>

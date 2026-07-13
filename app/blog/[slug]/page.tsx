@@ -41,7 +41,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       </header>
 
       <main className="flex-1 max-w-3xl mx-auto px-4 py-12">
-        <Link href="/" className="text-sm text-brand-600 hover:underline mb-6 inline-block">
+        <Link href="/" className="text-sm text-brand-500 hover:underline mb-6 inline-block">
           ← Back to home
         </Link>
 

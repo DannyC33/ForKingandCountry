@@ -249,7 +249,7 @@ export default function GetStartedModal({ triggerClassName }: { triggerClassName
               <div className="flex items-center gap-4">
                 <a
                   href={`tel:${CONTACT_PHONE.replace(/-/g, '')}`}
-                  className="flex items-center gap-1.5 text-brand-600 font-semibold text-sm hover:text-brand-700 transition-colors"
+                  className="flex items-center gap-1.5 text-brand-500 font-semibold text-sm hover:text-brand-500 transition-colors"
                 >
                   <svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.82a16 16 0 0 0 6.06 6.06l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
@@ -575,7 +575,7 @@ export default function GetStartedModal({ triggerClassName }: { triggerClassName
                   </h2>
                   <p className="text-gray-500 text-sm leading-relaxed">
                     We&apos;ve received your information and will be in touch shortly. In the meantime, feel free to call us directly at{' '}
-                    <a href={`tel:${CONTACT_PHONE.replace(/-/g, '')}`} className="text-brand-600 font-semibold">{CONTACT_PHONE}</a>.
+                    <a href={`tel:${CONTACT_PHONE.replace(/-/g, '')}`} className="text-brand-500 font-semibold">{CONTACT_PHONE}</a>.
                   </p>
                   <button
                     onClick={handleClose}

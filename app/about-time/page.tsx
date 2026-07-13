@@ -40,7 +40,7 @@ export default function AboutTimePage() {
         {/* Left — scrollable content */}
         <div className="flex-1 min-w-0">
 
-          <span className="inline-block text-xs font-semibold tracking-widest text-brand-600 uppercase mb-4">
+          <span className="inline-block text-xs font-semibold tracking-widest text-brand-500 uppercase mb-4">
             Our Story
           </span>
 

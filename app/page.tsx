@@ -35,7 +35,7 @@ function PostCard({ post }: { post: WebflowPost }) {
             year: 'numeric',
           })}
         </p>
-        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2">
+        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-brand-500 transition-colors line-clamp-2">
           {post.fieldData.name}
         </h3>
         {summary && <p className="text-sm text-gray-500 line-clamp-3">{summary}</p>}
@@ -273,7 +273,7 @@ export default async function HomePage() {
         {/* What We Do */}
         <section className="py-20 px-6 bg-white">
           <div className="max-w-6xl mx-auto">
-            <span className="inline-block text-xs font-semibold tracking-widest text-brand-600 uppercase mb-4">
+            <span className="inline-block text-xs font-semibold tracking-widest text-brand-500 uppercase mb-4">
               Our Services
             </span>
             <h2 className="text-4xl font-bold text-gray-900 mb-12">What we do</h2>
@@ -603,7 +603,7 @@ export default async function HomePage() {
               <div className="flex-1 min-w-0 space-y-10">
 
                 <div>
-                  <span className="inline-block text-xs font-semibold tracking-widest text-brand-600 uppercase mb-4">The Team</span>
+                  <span className="inline-block text-xs font-semibold tracking-widest text-brand-500 uppercase mb-4">The Team</span>
                   <h2 className="text-4xl font-bold text-gray-900 mb-6">Meet the Creator</h2>
                   <p className="text-gray-600 text-lg leading-relaxed">
                     I am a product manager with experience working through every phase of digital customer
@@ -714,7 +714,7 @@ export default async function HomePage() {
         {/* Our Philosophy */}
         <section className="py-20 px-6 bg-gray-50">
           <div className="max-w-6xl mx-auto">
-            <span className="inline-block text-xs font-semibold tracking-widest text-brand-600 uppercase mb-4">
+            <span className="inline-block text-xs font-semibold tracking-widest text-brand-500 uppercase mb-4">
               What I Believe
             </span>
             <h2 className="text-4xl font-bold text-gray-900 mb-12">My Philosophy</h2>
