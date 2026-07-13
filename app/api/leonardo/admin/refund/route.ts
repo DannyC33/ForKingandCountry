@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { stripe } from '@/lib/stripe';
+import { getStripe } from '@/lib/stripe';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   };
   if (amountCents) refundParams.amount = amountCents;
 
-  const refund = await stripe.refunds.create(refundParams);
+  const refund = await getStripe().refunds.create(refundParams);
   const refundedAmount = refund.amount / 100;
 
   await supabase

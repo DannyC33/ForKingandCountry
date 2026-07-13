@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { stripe } from '@/lib/stripe';
+import { getStripe } from '@/lib/stripe';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 
   if (eligibleForRefund) {
     try {
-      const refund = await stripe.refunds.create({
+      const refund = await getStripe().refunds.create({
         payment_intent: booking.stripe_payment_intent_id!,
         amount: Math.round(Number(booking.amount_paid) * 100),
       });

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { stripe } from '@/lib/stripe';
+import { getStripe } from '@/lib/stripe';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Verify payment actually succeeded on Stripe's side
-  const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+  const pi = await getStripe().paymentIntents.retrieve(paymentIntentId);
   if (pi.status !== 'succeeded') {
     return NextResponse.json({ error: 'Payment not yet confirmed' }, { status: 402 });
   }
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   const result = data?.[0];
   if (result?.conflict) {
     // Room was just taken — refund automatically
-    await stripe.refunds.create({ payment_intent: paymentIntentId });
+    await getStripe().refunds.create({ payment_intent: paymentIntentId });
     return NextResponse.json(
       { error: 'Room was just booked by someone else. Your payment has been refunded.' },
       { status: 409 }
