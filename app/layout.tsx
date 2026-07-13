@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Script from 'next/script';
 import CookieConsent from '@/components/CookieConsent';
 import TrackingScripts from '@/components/TrackingScripts';
+import RudderPageView from '@/components/RudderPageView';
 
 export const metadata: Metadata = {
   title: {
@@ -32,6 +34,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      {/* Google tag (gtag.js) */}
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-MCDFFJVR0B"
+        strategy="afterInteractive"
+      />
+      <Script id="gtag-init" strategy="afterInteractive">{`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-MCDFFJVR0B');
+      `}</Script>
       <body className="min-h-screen">
         <a
           href="#main-content"
@@ -40,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         {children}
+        <RudderPageView />
         <TrackingScripts />
         <CookieConsent />
       </body>

@@ -744,7 +744,7 @@ export default async function HomePage() {
               {/* Video */}
               <div className="w-full lg:w-72 shrink-0 aspect-[9/16] rounded-2xl overflow-hidden bg-black shadow-xl lg:-mt-24">
                 <video
-                  src="/Video2.MOV"
+                  src="https://zcpgcyocniscrbgssmxc.supabase.co/storage/v1/object/public/Servus-Videos/Video2.MOV"
                   className="w-full h-full object-cover"
                   controls
                   playsInline
