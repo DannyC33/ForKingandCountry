@@ -81,6 +81,13 @@ async function addToBrevo(
   const [firstName, ...rest] = name.trim().split(' ');
   const lastName = rest.join(' ') || '';
 
+  if (!process.env.BREVO_API_KEY) {
+    console.error('[Brevo] BREVO_API_KEY is not set — skipping contact sync for:', email);
+    return;
+  }
+
+  console.log('[Brevo] Starting contact sync:', { email, listId, emailOptIn, smsOptIn, hasPhone: !!phone });
+
   const baseAttributes = {
     FIRSTNAME: firstName,
     LASTNAME: lastName,
@@ -91,29 +98,32 @@ async function addToBrevo(
 
   const validPhone = phone && phone.replace(/\D/g, '').length >= 10;
 
-  // First attempt — include SMS
-  let result = await brevoUpsert({
+  const firstPayload = {
     email,
     emailBlacklisted: !emailOptIn,
     smsBlacklisted: !smsOptIn,
     attributes: { ...baseAttributes, ...(validPhone ? { SMS: phone } : {}) },
     listIds: [listId],
     updateEnabled: true,
-  });
+  };
+  console.log('[Brevo] Attempt 1 payload:', JSON.stringify(firstPayload));
+
+  let result = await brevoUpsert(firstPayload);
+  console.log('[Brevo] Attempt 1 result:', { status: result.status, ok: result.ok, body: result.body });
 
   // If SMS caused a duplicate collision, retry without it
   if (!result.ok && result.body.includes('duplicate_parameter') && result.body.includes('SMS')) {
-    console.warn('Brevo SMS duplicate — retrying without SMS for:', email);
-    result = await brevoUpsert({
-      email,
-      attributes: baseAttributes,
-      listIds: [listId],
-      updateEnabled: true,
-    });
+    console.warn('[Brevo] SMS duplicate detected — retrying without SMS for:', email);
+    const retryPayload = { email, attributes: baseAttributes, listIds: [listId], updateEnabled: true };
+    console.log('[Brevo] Attempt 2 payload:', JSON.stringify(retryPayload));
+    result = await brevoUpsert(retryPayload);
+    console.log('[Brevo] Attempt 2 result:', { status: result.status, ok: result.ok, body: result.body });
   }
 
-  if (!result.ok) {
-    console.error('Brevo error:', result.status, result.body);
+  if (result.ok) {
+    console.log('[Brevo] Contact sync succeeded for:', email);
+  } else {
+    console.error('[Brevo] Contact sync failed:', { status: result.status, body: result.body, email });
     await sendAdminAlert('Brevo contact sync failed', {
       'HTTP Status': result.status,
       'Brevo Error': result.body,
@@ -208,10 +218,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to save' }, { status: 500 });
     }
 
-    // Sync to Brevo in the background
-    addToBrevo(name, email.toLowerCase(), normalizedPhone ?? '', businessName, services, painPoint ?? '', emailOptIn, smsOptIn)
-      .catch(err => console.error('Brevo sync error:', err));
-
+    // Sync to Brevo — awaited so Vercel doesn't kill the function before it completes
+    await addToBrevo(name, email.toLowerCase(), normalizedPhone ?? '', businessName, services, painPoint ?? '', emailOptIn, smsOptIn)
+      .catch(err => console.error('[Brevo] Unexpected sync error:', err));
 
     return NextResponse.json({ success: true });
   } catch (err) {
