@@ -129,6 +129,16 @@ async function addToBrevo(
 
 export async function POST(request: NextRequest) {
   try {
+    // Validate required env vars early so errors are obvious in logs
+    const missingVars = [
+      'NEXT_PUBLIC_SUPABASE_URL',
+      'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+    ].filter(v => !process.env[v]);
+    if (missingVars.length > 0) {
+      console.error('Leads API: missing environment variables:', missingVars.join(', '));
+      return NextResponse.json({ error: 'Server misconfiguration' }, { status: 500 });
+    }
+
     const body = await request.json();
     const { businessName, services, name, phone, email, painPoint, emailOptIn = false, smsOptIn = false } = body;
 
