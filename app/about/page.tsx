@@ -50,7 +50,7 @@ export default function AboutPage() {
           <p className="border-l-4 border-brand-500 pl-4 italic">
             At Servus the goal is to help you become the path of least resistance for your customers
             by freshening up your online experience, creating impactful marketing and business
-            practices to meet your customers where they are, and drive them through your onboarding process.
+            practices to meet your customers where they are, and make onboarding simple and easy.
           </p>
 
           <div>
