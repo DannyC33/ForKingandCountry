@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://the-last-shall-be-first.co').replace(/\/$/, '');
+const BASE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://servus.gratis').replace(/\/$/, '');
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
