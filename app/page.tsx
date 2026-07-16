@@ -1,58 +1,10 @@
 import React, { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getBlogPosts } from '@/lib/webflow/client';
-import type { WebflowPost } from '@/lib/webflow/client';
 import GetStartedModal from '@/components/GetStartedModal';
 import PricingSection from '@/components/PricingSection';
 
-export const revalidate = 3600;
-
-function PostCard({ post }: { post: WebflowPost }) {
-  const image = post.fieldData['main-image'];
-  const summary = post.fieldData['post-summary'] ?? '';
-  const publishedOn = post.fieldData['published-on'] ?? post.createdOn;
-
-  return (
-    <Link
-      href={`/blog/${post.fieldData.slug}`}
-      className="group flex flex-col rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-    >
-      {image?.url && (
-        <div className="relative h-48 w-full bg-gray-100">
-          <Image
-            src={image.url}
-            alt={image.alt ?? post.fieldData.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-      )}
-      <div className="p-5 flex flex-col flex-1 gap-2">
-        <p className="text-xs text-gray-400">
-          {new Date(publishedOn).toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          })}
-        </p>
-        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-brand-500 transition-colors line-clamp-2">
-          {post.fieldData.name}
-        </h3>
-        {summary && <p className="text-sm text-gray-500 line-clamp-3">{summary}</p>}
-      </div>
-    </Link>
-  );
-}
-
-export default async function HomePage() {
-  let posts: WebflowPost[] = [];
-  try {
-    posts = await getBlogPosts();
-  } catch {
-    // Webflow not configured — show empty state
-  }
-
+export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b border-gray-200 bg-white sticky top-0 z-40">
@@ -579,20 +531,6 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
-{/* CMS Posts */}
-        {posts.length > 0 && (
-          <section id="posts" className="py-16 px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">Latest Posts</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
-          </div>
-          </section>
-        )}
 
         {/* Bottom CTA */}
         <section className="py-24 px-6 bg-[#1e3a5f] text-white">
