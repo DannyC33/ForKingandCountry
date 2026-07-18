@@ -15,9 +15,10 @@ export default function CookieConsent() {
     if (!hasConsented()) setVisible(true);
   }, []);
 
-  // Focus the dialog when it appears
+  // Focus the dialog when it appears — preventScroll stops browsers from
+  // scrolling to the element's DOM position (which is at the bottom of <body>)
   useEffect(() => {
-    if (visible) dialogRef.current?.focus();
+    if (visible) dialogRef.current?.focus({ preventScroll: true });
   }, [visible]);
 
   // Escape = Decline All
