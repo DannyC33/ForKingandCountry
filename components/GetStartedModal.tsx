@@ -158,9 +158,15 @@ export default function GetStartedModal({ triggerClassName }: { triggerClassName
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [open, handleClose]);
 
-  // Return focus to trigger button when modal closes
+  // Return focus to trigger button when modal closes (not on initial mount)
+  const wasOpenRef = useRef(false);
   useEffect(() => {
-    if (!open) triggerRef.current?.focus();
+    if (open) {
+      wasOpenRef.current = true;
+    } else if (wasOpenRef.current) {
+      triggerRef.current?.focus();
+      wasOpenRef.current = false;
+    }
   }, [open]);
 
   // Close country menu when clicking outside

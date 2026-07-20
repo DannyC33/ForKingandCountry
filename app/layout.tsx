@@ -45,17 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <Script id="scroll-restoration" strategy="beforeInteractive">{`
         if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
       `}</Script>
-      {/* Google tag (gtag.js) */}
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-MCDFFJVR0B"
-        strategy="afterInteractive"
-      />
-      <Script id="gtag-init" strategy="afterInteractive">{`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-MCDFFJVR0B');
-      `}</Script>
+
       <body className="min-h-screen">
         <a
           href="#main-content"
