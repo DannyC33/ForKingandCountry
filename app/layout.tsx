@@ -41,6 +41,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      {/* Disable browser scroll restoration so reloads always start at the top */}
+      <Script id="scroll-restoration" strategy="beforeInteractive">{`
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      `}</Script>
       {/* Google tag (gtag.js) */}
       <Script
         src="https://www.googletagmanager.com/gtag/js?id=G-MCDFFJVR0B"
