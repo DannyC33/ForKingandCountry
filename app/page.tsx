@@ -253,7 +253,7 @@ export default function HomePage() {
               The Experience
             </span>
             <h2 className="text-4xl font-bold text-white mb-10">
-              Vision for an Exceptional Pizza Experience
+              Vision For An Online Experience — Pizza Ordering Edition
             </h2>
 
             {/* Top 3 steps */}
