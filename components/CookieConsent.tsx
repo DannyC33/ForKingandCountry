@@ -15,10 +15,15 @@ export default function CookieConsent() {
     if (!hasConsented()) setVisible(true);
   }, []);
 
-  // Focus the dialog when it appears — preventScroll stops browsers from
-  // scrolling to the element's DOM position (which is at the bottom of <body>)
+  // Lock body scroll while modal is open so the underlying page can't drift
   useEffect(() => {
-    if (visible) dialogRef.current?.focus({ preventScroll: true });
+    if (visible) {
+      document.body.style.overflow = 'hidden';
+      dialogRef.current?.focus({ preventScroll: true });
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
   }, [visible]);
 
   // Escape = Decline All
@@ -37,6 +42,7 @@ export default function CookieConsent() {
   const accept = (analyticsVal: boolean, marketingVal: boolean) => {
     saveConsent(analyticsVal, marketingVal);
     setVisible(false);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   return (
