@@ -74,7 +74,7 @@ export default function PricingSection() {
                 <div className="rounded-2xl bg-[#1e3a5f] text-white flex flex-col overflow-hidden">
                   <div className="px-7 pt-8 pb-6 border-b border-white/15">
                     <p className="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-2">Web Experience</p>
-                    <p className="text-4xl font-bold">$1,500</p>
+                    <p className="text-4xl font-bold">$3,000</p>
                     <p className="text-blue-200 text-sm mt-1">One-time project fee</p>
                     <p className="text-blue-300 text-xs mt-3 leading-relaxed italic">For our recommended tech stack, if you do not elect to work with us moving forward there is an estimated $74/mo technology cost for the tools to build, deploy, and maintain your website.</p>
                   </div>
