@@ -28,6 +28,14 @@ next-env.d.ts
 .DS_Store
 *.pem
 
+# SSH keys - never commit these
+Githubkey
+Githubkey.pub
+*.key
+id_rsa
+id_ed25519
+id_ecdsa
+
 # large video files
 *.MOV
 *.mov
