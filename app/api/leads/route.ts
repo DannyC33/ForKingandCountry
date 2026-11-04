@@ -137,6 +137,14 @@ async function addToBrevo(
   }
 }
 
+async function sendPushNotification(name: string, email: string, businessName: string, services: string[]) {
+  const { sendWebPush } = await import('@/lib/webpush');
+  await sendWebPush(
+    'New Servus Lead!',
+    `${name} · ${businessName}\n${email}\n${services.join(', ')}`,
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Validate required env vars early so errors are obvious in logs
@@ -221,6 +229,9 @@ export async function POST(request: NextRequest) {
     // Sync to Brevo — awaited so Vercel doesn't kill the function before it completes
     await addToBrevo(name, email.toLowerCase(), normalizedPhone ?? '', businessName, services, painPoint ?? '', emailOptIn, smsOptIn)
       .catch(err => console.error('[Brevo] Unexpected sync error:', err));
+
+    // Fire-and-forget iPhone push notification
+    sendPushNotification(name, email.toLowerCase(), businessName, services).catch(() => {});
 
     return NextResponse.json({ success: true });
   } catch (err) {

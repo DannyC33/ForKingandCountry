@@ -1,0 +1,25 @@
+{
+  "name": "Servus Admin",
+  "short_name": "Servus",
+  "description": "Servus admin portal — form submissions and notifications",
+  "start_url": "/servus-admin/dashboard",
+  "scope": "/servus-admin/",
+  "display": "standalone",
+  "background_color": "#f0f9ff",
+  "theme_color": "#32303A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/LogoV1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/LogoV1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
