@@ -2,6 +2,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import {
+  AreaChart, Area, BarChart, Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 interface Lead {
   id: string;
@@ -48,6 +53,17 @@ export default function ServusAdminDashboard() {
 
   const [notifyStates, setNotifyStates] = useState<Record<string, NotifyState>>({});
 
+  interface AnalyticsData {
+    dailyVisitors: { date: string; visitors: number; views: number }[];
+    topPages:  { page: string; views: number }[];
+    topClicks: { label: string; clicks: number }[];
+    totalSessions: number;
+    totalPageViews: number;
+    totalClicks: number;
+  }
+  const [analytics,        setAnalytics]        = useState<AnalyticsData | null>(null);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(true);
+
   // ── Service worker + subscription check ───────────────────────────────────
   useEffect(() => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
@@ -83,6 +99,15 @@ export default function ServusAdminDashboard() {
   }, [router]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
+
+  // ── Analytics ─────────────────────────────────────────────────────────────
+  useEffect(() => {
+    setLoadingAnalytics(true);
+    fetch('/api/servus/admin/analytics')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setAnalytics(d); })
+      .finally(() => setLoadingAnalytics(false));
+  }, []);
 
   // ── Subscribe ──────────────────────────────────────────────────────────────
   async function subscribeToPush() {
@@ -418,6 +443,132 @@ export default function ServusAdminDashboard() {
                 );
               })}
             </div>
+          )}
+        </div>
+
+        {/* ── Analytics ──────────────────────────────────────────────────── */}
+        <div className="space-y-6">
+          <h2 className="font-semibold text-gray-900 text-base">Site Analytics — last 30 days</h2>
+
+          {loadingAnalytics ? (
+            <div className="text-gray-400 text-sm py-8 text-center">Loading analytics…</div>
+          ) : !analytics ? (
+            <div className="bg-white rounded-2xl border border-gray-200 p-5 text-sm text-gray-400 text-center py-10">
+              No data yet — analytics will appear once visitors reach the site.
+            </div>
+          ) : (
+            <>
+              {/* Stat tiles */}
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { label: 'Unique Visitors', value: analytics.totalSessions.toLocaleString() },
+                  { label: 'Page Views',      value: analytics.totalPageViews.toLocaleString() },
+                  { label: 'Clicks Tracked',  value: analytics.totalClicks.toLocaleString() },
+                ].map(({ label, value }) => (
+                  <div key={label} className="bg-white rounded-2xl border border-gray-200 p-5 text-center">
+                    <p className="text-2xl font-bold text-gray-900">{value}</p>
+                    <p className="text-xs text-gray-500 mt-1">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Daily visitors chart */}
+              <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                <h3 className="font-semibold text-gray-800 text-sm mb-4">Daily Visitors</h3>
+                <ResponsiveContainer width="100%" height={200}>
+                  <AreaChart data={analytics.dailyVisitors} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="visitorGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%"  stopColor="#0ea5e9" stopOpacity={0.15} />
+                        <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: '#9ca3af' }}
+                      tickFormatter={d => {
+                        const dt = new Date(d + 'T12:00:00');
+                        return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                      }}
+                      interval={6}
+                    />
+                    <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb' }}
+                      labelFormatter={d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    />
+                    <Area type="monotone" dataKey="visitors" name="Visitors" stroke="#0ea5e9" strokeWidth={2} fill="url(#visitorGrad)" dot={false} />
+                    <Area type="monotone" dataKey="views"    name="Page Views" stroke="#32303A" strokeWidth={1.5} fill="none" dot={false} strokeDasharray="4 2" />
+                  </AreaChart>
+                </ResponsiveContainer>
+                <div className="flex gap-4 justify-end mt-2">
+                  <span className="flex items-center gap-1.5 text-xs text-gray-400"><span className="w-4 h-0.5 bg-brand-500 inline-block rounded" />Visitors</span>
+                  <span className="flex items-center gap-1.5 text-xs text-gray-400"><span className="w-4 h-0.5 bg-brand-600 inline-block rounded" style={{ borderTop: '2px dashed #32303A', background: 'none' }} />Page Views</span>
+                </div>
+              </div>
+
+              {/* Top pages + top clicks */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                {/* Top pages */}
+                <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                  <h3 className="font-semibold text-gray-800 text-sm mb-4">Top Pages</h3>
+                  {analytics.topPages.length === 0 ? (
+                    <p className="text-gray-400 text-xs">No page view data yet.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {analytics.topPages.map(({ page, views }) => {
+                        const max = analytics.topPages[0].views;
+                        return (
+                          <div key={page}>
+                            <div className="flex justify-between text-xs mb-0.5">
+                              <span className="text-gray-700 truncate max-w-[75%]">{page || '/'}</span>
+                              <span className="text-gray-400 shrink-0">{views.toLocaleString()}</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full bg-brand-500"
+                                style={{ width: `${(views / max) * 100}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* Top clicks */}
+                <div className="bg-white rounded-2xl border border-gray-200 p-5">
+                  <h3 className="font-semibold text-gray-800 text-sm mb-4">Top Clicks</h3>
+                  {analytics.topClicks.length === 0 ? (
+                    <p className="text-gray-400 text-xs">No click data yet.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {analytics.topClicks.map(({ label, clicks }) => {
+                        const max = analytics.topClicks[0].clicks;
+                        return (
+                          <div key={label}>
+                            <div className="flex justify-between text-xs mb-0.5">
+                              <span className="text-gray-700 truncate max-w-[75%]">{label}</span>
+                              <span className="text-gray-400 shrink-0">{clicks.toLocaleString()}</span>
+                            </div>
+                            <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full"
+                                style={{ width: `${(clicks / max) * 100}%`, background: '#32303A' }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </>
           )}
         </div>
 

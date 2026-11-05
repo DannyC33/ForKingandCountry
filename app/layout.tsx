@@ -4,6 +4,7 @@ import Script from 'next/script';
 import CookieConsent from '@/components/CookieConsent';
 import TrackingScripts from '@/components/TrackingScripts';
 import RudderPageView from '@/components/RudderPageView';
+import SiteAnalytics from '@/components/SiteAnalytics';
 
 export const metadata: Metadata = {
   title: {
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RudderPageView />
         <TrackingScripts />
         <CookieConsent />
+        <SiteAnalytics />
       </body>
     </html>
   );
