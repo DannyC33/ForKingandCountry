@@ -1,3 +1,7 @@
+// Force this SW to become active immediately without waiting for old tabs to close
+self.addEventListener('install',  () => self.skipWaiting());
+self.addEventListener('activate', e  => e.waitUntil(self.clients.claim()));
+
 self.addEventListener('push', event => {
   const data = event.data?.json() ?? {};
   const title   = data.title   ?? 'Servus';

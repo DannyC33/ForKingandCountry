@@ -163,6 +163,32 @@ export default function ServusAdminDashboard() {
     }
   }
 
+  async function resetPush() {
+    setPushStatus('subscribing');
+    setPushMsg('Resetting…');
+    try {
+      // Unregister ALL service workers on this origin
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const reg of regs) {
+        const sub = await reg.pushManager.getSubscription().catch(() => null);
+        if (sub) {
+          await fetch('/api/servus/admin/push-subscribe', {
+            method:  'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ endpoint: sub.endpoint }),
+          }).catch(() => {});
+          await sub.unsubscribe().catch(() => {});
+        }
+        await reg.unregister();
+      }
+      setPushStatus('unsubscribed');
+      setPushMsg('Reset complete — tap Enable Notifications to re-subscribe.');
+    } catch (err) {
+      setPushStatus('unsubscribed');
+      setPushMsg(`Reset error: ${err instanceof Error ? err.message : 'Unknown'}`);
+    }
+  }
+
   async function sendTestPush() {
     setPushTestState('sending');
     try {
@@ -334,6 +360,13 @@ export default function ServusAdminDashboard() {
                     className="text-gray-500 hover:text-gray-900 text-sm px-3 py-2 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors"
                   >
                     Disable
+                  </button>
+                  <button
+                    onClick={resetPush}
+                    className="text-gray-400 hover:text-red-500 text-sm px-3 py-2 rounded-xl border border-gray-200 hover:border-red-200 transition-colors"
+                    title="Clear all subscriptions and start fresh"
+                  >
+                    Reset
                   </button>
                 </>
               )}
