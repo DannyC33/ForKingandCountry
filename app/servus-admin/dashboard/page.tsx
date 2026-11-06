@@ -47,9 +47,11 @@ export default function ServusAdminDashboard() {
   const [brevoState,    setBrevoState]    = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
   const [brevoMsg,      setBrevoMsg]      = useState('');
 
-  const [pushStatus,    setPushStatus]    = useState<PushStatus>('unknown');
-  const [pushMsg,       setPushMsg]       = useState('');
-  const [pushTestState, setPushTestState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [pushStatus,     setPushStatus]     = useState<PushStatus>('unknown');
+  const [pushMsg,        setPushMsg]        = useState('');
+  const [pushTestState,  setPushTestState]  = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [localTestState, setLocalTestState] = useState<'idle' | 'ok' | 'error'>('idle');
+  const [localTestMsg,   setLocalTestMsg]   = useState('');
 
   const [notifyStates, setNotifyStates] = useState<Record<string, NotifyState>>({});
 
@@ -206,6 +208,29 @@ export default function ServusAdminDashboard() {
     }
   }
 
+  // ── Local notification test (no server, no push — direct SW call) ─────────
+  async function testLocalNotification() {
+    setLocalTestState('idle');
+    setLocalTestMsg('');
+    try {
+      if (!('serviceWorker' in navigator)) {
+        setLocalTestState('error');
+        setLocalTestMsg('Service workers not supported in this browser.');
+        return;
+      }
+      const reg = await navigator.serviceWorker.ready;
+      await reg.showNotification('Servus Local Test', {
+        body: 'If you see this, notifications work on this device.',
+        icon: '/LogoV1.png',
+      });
+      setLocalTestState('ok');
+      setLocalTestMsg('Notification triggered — did it appear?');
+    } catch (err) {
+      setLocalTestState('error');
+      setLocalTestMsg(`Failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
   // ── Brevo ──────────────────────────────────────────────────────────────────
   async function testBrevo() {
     setBrevoState('sending');
@@ -336,38 +361,65 @@ export default function ServusAdminDashboard() {
               </p>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2">
               {pushStatus !== 'subscribed' ? (
                 <button
                   onClick={subscribeToPush}
                   disabled={pushStatus === 'subscribing' || pushStatus === 'denied' || pushStatus === 'unsupported'}
-                  className="flex-1 bg-brand-600 hover:bg-brand-700 text-white text-sm py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="bg-brand-600 hover:bg-brand-700 text-white text-sm py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {pushStatus === 'subscribing' ? 'Enabling…' : 'Enable Notifications'}
                 </button>
               ) : (
                 <>
-                  <button
-                    onClick={sendTestPush}
-                    disabled={pushTestState === 'sending'}
-                    className="flex-1 bg-brand-500 hover:opacity-90 text-white text-sm py-2.5 rounded-xl font-semibold transition-opacity disabled:opacity-40"
-                    style={{ background: pushTestState === 'sent' ? '#16a34a' : pushTestState === 'error' ? '#ef4444' : '' }}
-                  >
-                    {pushTestState === 'sending' ? 'Sending…' : pushTestState === 'sent' ? 'Sent ✓' : 'Send Test Push'}
-                  </button>
-                  <button
-                    onClick={unsubscribeFromPush}
-                    className="text-gray-500 hover:text-gray-900 text-sm px-3 py-2 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors"
-                  >
-                    Disable
-                  </button>
-                  <button
-                    onClick={resetPush}
-                    className="text-gray-400 hover:text-red-500 text-sm px-3 py-2 rounded-xl border border-gray-200 hover:border-red-200 transition-colors"
-                    title="Clear all subscriptions and start fresh"
-                  >
-                    Reset
-                  </button>
+                  {/* Step 1 — local test, no server needed */}
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">Step 1 — test notifications on this device directly:</p>
+                    <button
+                      onClick={testLocalNotification}
+                      className="w-full text-white text-sm py-2.5 rounded-xl font-semibold transition-colors"
+                      style={{ background: localTestState === 'ok' ? '#16a34a' : localTestState === 'error' ? '#ef4444' : '#6b7280' }}
+                    >
+                      {localTestState === 'ok' ? 'Triggered ✓' : localTestState === 'error' ? 'Failed ✗' : 'Test Local Notification'}
+                    </button>
+                    {localTestMsg && (
+                      <p className={`text-xs mt-1 ${localTestState === 'ok' ? 'text-green-600' : 'text-red-500'}`}>{localTestMsg}</p>
+                    )}
+                  </div>
+
+                  {/* Step 2 — server push */}
+                  <div>
+                    <p className="text-xs text-gray-400 mb-1">Step 2 — send via server (close this app first, then tap):</p>
+                    <button
+                      onClick={sendTestPush}
+                      disabled={pushTestState === 'sending'}
+                      className="w-full text-white text-sm py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-40"
+                      style={{ background: pushTestState === 'sent' ? '#16a34a' : pushTestState === 'error' ? '#ef4444' : '#0ea5e9' }}
+                    >
+                      {pushTestState === 'sending' ? 'Sending…' : pushTestState === 'sent' ? 'Sent ✓' : 'Send Test Push'}
+                    </button>
+                    {pushTestState === 'sent' && pushMsg && (
+                      <p className="text-xs mt-1 text-green-600">{pushMsg}</p>
+                    )}
+                    {pushTestState === 'error' && pushMsg && (
+                      <p className="text-xs mt-1 text-red-500 break-all">{pushMsg}</p>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={unsubscribeFromPush}
+                      className="flex-1 text-gray-500 hover:text-gray-900 text-xs py-1.5 rounded-xl border border-gray-200 hover:border-gray-300 transition-colors"
+                    >
+                      Disable
+                    </button>
+                    <button
+                      onClick={resetPush}
+                      className="flex-1 text-gray-400 hover:text-red-500 text-xs py-1.5 rounded-xl border border-gray-200 hover:border-red-200 transition-colors"
+                    >
+                      Reset &amp; Re-subscribe
+                    </button>
+                  </div>
                 </>
               )}
             </div>
