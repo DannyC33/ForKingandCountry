@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: 'Servus Admin',
-    statusBarStyle: 'black-translucent',
+    statusBarStyle: 'default',
   },
 };
 

@@ -31,11 +31,13 @@ function fmt(dt: string) {
   });
 }
 
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64  = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-  const raw     = atob(base64);
-  return new Uint8Array([...raw].map(c => c.charCodeAt(0)));
+  const rawData = atob(base64);
+  const array   = new Uint8Array(new ArrayBuffer(rawData.length));
+  for (let i = 0; i < rawData.length; i++) array[i] = rawData.charCodeAt(i);
+  return array;
 }
 
 export default function ServusAdminDashboard() {
@@ -46,6 +48,9 @@ export default function ServusAdminDashboard() {
 
   const [brevoState,    setBrevoState]    = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
   const [brevoMsg,      setBrevoMsg]      = useState('');
+
+  const [ntfyState,     setNtfyState]     = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
+  const [ntfyMsg,       setNtfyMsg]       = useState('');
 
   const [pushStatus,     setPushStatus]     = useState<PushStatus>('unknown');
   const [pushMsg,        setPushMsg]        = useState('');
@@ -116,17 +121,16 @@ export default function ServusAdminDashboard() {
     setPushStatus('subscribing');
     setPushMsg('');
     try {
-      const reg        = await navigator.serviceWorker.ready;
       const permission = await Notification.requestPermission();
       if (permission !== 'granted') {
         setPushStatus('denied');
         setPushMsg('Permission denied. Enable in iPhone Settings → Safari → Notifications.');
         return;
       }
-      const keyArray = urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!);
+      const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/servus-admin/' });
       const sub = await reg.pushManager.subscribe({
         userVisibleOnly:      true,
-        applicationServerKey: keyArray.buffer as ArrayBuffer,
+        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
       });
       const res = await fetch('/api/servus/admin/push-subscribe', {
         method:  'POST',
@@ -228,6 +232,22 @@ export default function ServusAdminDashboard() {
     } catch (err) {
       setLocalTestState('error');
       setLocalTestMsg(`Failed: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  // ── ntfy ───────────────────────────────────────────────────────────────────
+  async function testNtfy() {
+    setNtfyState('sending');
+    setNtfyMsg('');
+    try {
+      const res = await fetch('/api/servus/admin/ntfy-test', { method: 'POST' });
+      const d   = await res.json();
+      if (!res.ok) { setNtfyState('error'); setNtfyMsg(d.error ?? 'Failed'); return; }
+      setNtfyState('ok');
+      setNtfyMsg(`Sent to topic: ${d.topic}`);
+    } catch {
+      setNtfyState('error');
+      setNtfyMsg('Network error');
     }
   }
 
@@ -422,6 +442,44 @@ export default function ServusAdminDashboard() {
                   </div>
                 </>
               )}
+            </div>
+          </div>
+
+          {/* ntfy.sh push */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-5">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <h2 className="font-semibold text-gray-900 text-sm">ntfy Push (Recommended)</h2>
+                <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
+                  Reliable iOS push via Apple APNS.{' '}
+                  <a href="https://ntfy.sh" target="_blank" rel="noopener noreferrer" className="text-brand-500 underline">ntfy.sh</a>
+                  {' '}→ download app → subscribe to a topic → add <code className="bg-gray-100 px-1 rounded">NTFY_TOPIC</code> to Vercel.
+                </p>
+                {ntfyMsg && (
+                  <p className={`text-xs mt-2 ${ntfyState === 'ok' ? 'text-green-600' : 'text-red-500'}`}>
+                    {ntfyState === 'ok' ? '✓ ' : '✗ '}{ntfyMsg}
+                  </p>
+                )}
+                {ntfyState === 'error' && ntfyMsg.includes('NTFY_TOPIC') && (
+                  <div className="mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2 space-y-1">
+                    <p className="font-medium">Setup steps:</p>
+                    <ol className="list-decimal list-inside space-y-0.5 ml-0.5">
+                      <li>Download <strong>ntfy</strong> from the App Store (free)</li>
+                      <li>Tap + and subscribe to any topic, e.g. <code>servus-leads-john</code></li>
+                      <li>Add <code>NTFY_TOPIC=servus-leads-john</code> to Vercel env vars</li>
+                      <li>Redeploy, then tap Send Test</li>
+                    </ol>
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={testNtfy}
+                disabled={ntfyState === 'sending'}
+                className="shrink-0 text-sm px-4 py-2 rounded-xl font-semibold transition-colors disabled:opacity-40 text-white whitespace-nowrap"
+                style={{ background: ntfyState === 'ok' ? '#16a34a' : ntfyState === 'error' ? '#ef4444' : '#32303A' }}
+              >
+                {ntfyState === 'sending' ? 'Sending…' : ntfyState === 'ok' ? 'Sent ✓' : ntfyState === 'error' ? 'Retry' : 'Send Test'}
+              </button>
             </div>
           </div>
 

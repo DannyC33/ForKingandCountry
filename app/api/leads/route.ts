@@ -138,11 +138,16 @@ async function addToBrevo(
 }
 
 async function sendPushNotification(name: string, email: string, businessName: string, services: string[]) {
+  const title = 'New Servus Lead!';
+  const body  = `${name} · ${businessName}\n${email}\n${services.join(', ')}`;
+
+  // ntfy.sh — reliable iOS push via their APNS pipeline
+  const { sendNtfy }   = await import('@/lib/ntfy');
+  await sendNtfy(title, body, ['bust_in_silhouette']).catch(() => {});
+
+  // Web Push — keep as backup
   const { sendWebPush } = await import('@/lib/webpush');
-  await sendWebPush(
-    'New Servus Lead!',
-    `${name} · ${businessName}\n${email}\n${services.join(', ')}`,
-  );
+  await sendWebPush(title, body).catch(() => {});
 }
 
 export async function POST(request: NextRequest) {
